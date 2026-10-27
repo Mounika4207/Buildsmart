@@ -40,6 +40,17 @@ export const Home = () => {
 
   useEffect(() => {
     fetchFeatured();
+
+    // Auto-scroll to section if URL has hash (e.g. #sports, #about)
+    if (window.location.hash) {
+      const id = window.location.hash.replace('#', '');
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+      }
+    }
   }, []);
 
   return (

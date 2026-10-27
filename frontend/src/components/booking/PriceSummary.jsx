@@ -139,12 +139,28 @@ export const PriceSummary = ({
       {onProceed && (
         <button
           type="button"
-          disabled={!selectedSlot || loading || (isCheckout && !termsAccepted)}
+          disabled={loading || (isCheckout && (!termsAccepted || !selectedSlot))}
           onClick={onProceed}
           className="btn btn-lime"
-          style={{ width: '100%', height: '48px', fontSize: '1rem', fontWeight: 700 }}
+          style={{
+            width: '100%',
+            height: '48px',
+            fontSize: '1rem',
+            fontWeight: 700,
+            cursor: loading ? 'wait' : 'pointer',
+            backgroundColor: (!selectedSlot && !isCheckout) ? 'rgba(16, 239, 140, 0.12)' : 'var(--lime-primary)',
+            color: (!selectedSlot && !isCheckout) ? 'var(--lime-primary)' : 'var(--lime-text)',
+            border: (!selectedSlot && !isCheckout) ? '1px dashed var(--lime-primary)' : 'none',
+            transition: 'all 0.2s ease',
+          }}
         >
-          {loading ? 'Processing...' : isCheckout ? 'Confirm Booking' : 'Proceed to Checkout'}
+          {loading
+            ? 'Processing...'
+            : isCheckout
+            ? 'Confirm Booking'
+            : selectedSlot
+            ? 'Proceed to Checkout →'
+            : 'Select a Slot to Checkout'}
         </button>
       )}
     </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { turfService } from '../services/turfService';
 import { useToast } from '../context/ToastContext';
 import StatusBadge from '../components/common/StatusBadge';
@@ -34,7 +35,7 @@ export const AdminTurfs = () => {
   const fetchTurfs = async () => {
     setLoading(true);
     try {
-      const res = await turfService.getAllTurfs();
+      const res = await turfService.getAdminTurfs();
       setTurfs(res.turfs || []);
     } catch (err) {
       showToast('Failed to load turfs directory.', 'error');
@@ -194,15 +195,14 @@ export const AdminTurfs = () => {
 
                     <td style={{ padding: '1rem', textAlign: 'right' }}>
                       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                        <button
-                          type="button"
-                          onClick={() => setPreviewTurf(turf)}
+                        <Link
+                          to={`/turfs/${id}`}
                           className="btn btn-secondary btn-sm"
-                          title="Preview full details"
+                          title="Inspect full venue details and approve"
                         >
                           <Eye size={15} />
-                          <span>Audit</span>
-                        </button>
+                          <span>View & Inspect</span>
+                        </Link>
 
                         {!turf.isVerified ? (
                           <button

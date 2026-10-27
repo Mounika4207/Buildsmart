@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Get base URL from environment or default to local backend port 5000
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-export const ENABLE_MOCK_FALLBACK = import.meta.env.VITE_ENABLE_MOCK_FALLBACK === 'true' || true;
+export const ENABLE_MOCK_FALLBACK = import.meta.env.VITE_ENABLE_MOCK_FALLBACK === 'true';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

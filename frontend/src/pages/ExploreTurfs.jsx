@@ -84,6 +84,16 @@ export const ExploreTurfs = () => {
     setSearchParams(new URLSearchParams());
   };
 
+  // Sync local filter states with incoming URL search parameters
+  useEffect(() => {
+    setSearchQuery(searchParams.get('search') || '');
+    setSport(searchParams.get('sport') || 'all');
+    setCity(searchParams.get('city') || 'all');
+    setMinPrice(searchParams.get('minPrice') || '');
+    setMaxPrice(searchParams.get('maxPrice') || '');
+    setSort(searchParams.get('sort') || 'popularity');
+  }, [searchParams]);
+
   // Fetch turfs whenever searchParams change
   useEffect(() => {
     const fetchTurfs = async () => {

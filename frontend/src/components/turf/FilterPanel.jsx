@@ -1,5 +1,5 @@
 import React from 'react';
-import { Filter, X, SlidersHorizontal } from 'lucide-react';
+import { X, SlidersHorizontal } from 'lucide-react';
 
 export const FilterPanel = ({
   filters,

@@ -57,17 +57,17 @@ export const Login = () => {
       const data = await login(formData);
       showToast(data.message || 'Logged in successfully!', 'success');
 
-      // If user is turf owner or admin, send them to their dashboard unless specific target was requested
-      if (!location.state?.from) {
-        if (data.user?.role === 'owner') {
-          navigate('/owner/dashboard', { replace: true });
-          return;
-        } else if (data.user?.role === 'admin') {
-          navigate('/admin/dashboard', { replace: true });
-          return;
-        }
+      // Role-based portal navigation
+      if (data.user?.role === 'admin') {
+        navigate('/admin/dashboard', { replace: true });
+        return;
+      }
+      if (data.user?.role === 'owner') {
+        navigate('/owner/dashboard', { replace: true });
+        return;
       }
 
+      // Customer redirect (honoring return path if booking intent exists)
       navigate(from, { replace: true, state: location.state });
     } catch (err) {
       console.error('Login error:', err);
@@ -160,7 +160,7 @@ export const Login = () => {
         </button>
       </form>
 
-      {/* College Project Evaluation Helpers (Demo Credentials) */}
+      {/* Quick Test Accounts for Instant Evaluation */}
       <div
         style={{
           borderTop: '1px solid var(--border-subtle)',
@@ -171,7 +171,7 @@ export const Login = () => {
         }}
       >
         <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-          College Demo Quick Accounts
+          Quick Test Accounts
         </span>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
           <button

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
   Trophy,
@@ -14,16 +14,37 @@ import {
 } from 'lucide-react';
 
 export const Navbar = () => {
-  const { user, isAuthenticated, logout, isDemoSession } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  // Public navigation links (Home, Explore Turfs, Sports, Why PlayArena) only appear on the home page or when logged out
+  const showPublicNav = !isAuthenticated || isHomePage;
 
   const handleLogout = () => {
     logout();
     setUserDropdownOpen(false);
     setMobileMenuOpen(false);
     navigate('/login');
+  };
+
+  const handleScrollTo = (e, targetId) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate(`/#${targetId}`);
+      setTimeout(() => {
+        const el = document.getElementById(targetId);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+    } else {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   };
 
   const getDashboardPath = () => {
@@ -34,13 +55,6 @@ export const Navbar = () => {
 
   return (
     <header style={{ position: 'sticky', top: 0, zIndex: 100, backdropFilter: 'blur(12px)', backgroundColor: 'rgba(10, 15, 29, 0.92)', borderBottom: '1px solid var(--border-subtle)' }}>
-      {/* College project demo indicator banner */}
-      <div className="demo-banner">
-        <span className="demo-pill">COLLEGE PROJECT</span>
-        <span>Sports Turf & Court Booking System • PlayArena Prototype</span>
-        {isDemoSession && <span style={{ color: 'var(--lime-primary)' }}>(Demo Session Active)</span>}
-      </div>
-
       <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '72px' }}>
         {/* Brand Logo */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
@@ -64,41 +78,45 @@ export const Navbar = () => {
           </span>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav style={{ display: 'none', alignItems: 'center', gap: '2rem' }} className="desktop-nav">
-          <NavLink
-            to="/"
-            style={({ isActive }) => ({
-              fontWeight: 500,
-              fontSize: '0.95rem',
-              color: isActive ? 'var(--lime-primary)' : 'var(--text-secondary)',
-            })}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/turfs"
-            style={({ isActive }) => ({
-              fontWeight: 500,
-              fontSize: '0.95rem',
-              color: isActive ? 'var(--lime-primary)' : 'var(--text-secondary)',
-            })}
-          >
-            Explore Turfs
-          </NavLink>
-          <a
-            href="/#sports"
-            style={{ fontWeight: 500, fontSize: '0.95rem', color: 'var(--text-secondary)' }}
-          >
-            Sports
-          </a>
-          <a
-            href="/#about"
-            style={{ fontWeight: 500, fontSize: '0.95rem', color: 'var(--text-secondary)' }}
-          >
-            Why PlayArena
-          </a>
-        </nav>
+        {/* Desktop Navigation Links - Only on Home Page when authenticated, or when logged out */}
+        {showPublicNav && (
+          <nav style={{ display: 'none', alignItems: 'center', gap: '2rem' }} className="desktop-nav">
+            <NavLink
+              to="/"
+              style={({ isActive }) => ({
+                fontWeight: 500,
+                fontSize: '0.95rem',
+                color: isActive ? 'var(--lime-primary)' : 'var(--text-secondary)',
+              })}
+            >
+              Home
+            </NavLink>
+            <NavLink
+              to="/turfs"
+              style={({ isActive }) => ({
+                fontWeight: 500,
+                fontSize: '0.95rem',
+                color: isActive ? 'var(--lime-primary)' : 'var(--text-secondary)',
+              })}
+            >
+              Explore Turfs
+            </NavLink>
+            <a
+              href="#sports"
+              onClick={(e) => handleScrollTo(e, 'sports')}
+              style={{ fontWeight: 500, fontSize: '0.95rem', color: 'var(--text-secondary)', cursor: 'pointer' }}
+            >
+              Sports
+            </a>
+            <a
+              href="#about"
+              onClick={(e) => handleScrollTo(e, 'about')}
+              style={{ fontWeight: 500, fontSize: '0.95rem', color: 'var(--text-secondary)', cursor: 'pointer' }}
+            >
+              Why PlayArena
+            </a>
+          </nav>
+        )}
 
         {/* Desktop User / Auth Actions */}
         <div style={{ display: 'none', alignItems: 'center', gap: '1rem' }} className="desktop-auth">
@@ -319,36 +337,45 @@ export const Navbar = () => {
           }}
           className="animate-fade-in"
         >
-          <NavLink
-            to="/"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{ fontSize: '1rem', color: 'var(--text-primary)' }}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/turfs"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{ fontSize: '1rem', color: 'var(--text-primary)' }}
-          >
-            Explore Turfs
-          </NavLink>
-          <a
-            href="/#sports"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{ fontSize: '1rem', color: 'var(--text-primary)' }}
-          >
-            Sports
-          </a>
-          <a
-            href="/#about"
-            onClick={() => setMobileMenuOpen(false)}
-            style={{ fontSize: '1rem', color: 'var(--text-primary)' }}
-          >
-            Why PlayArena
-          </a>
-
-          <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', margin: '0.5rem 0' }} />
+          {showPublicNav && (
+            <>
+              <NavLink
+                to="/"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{ fontSize: '1rem', color: 'var(--text-primary)' }}
+              >
+                Home
+              </NavLink>
+              <NavLink
+                to="/turfs"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{ fontSize: '1rem', color: 'var(--text-primary)' }}
+              >
+                Explore Turfs
+              </NavLink>
+              <a
+                href="#sports"
+                onClick={(e) => {
+                  setMobileMenuOpen(false);
+                  handleScrollTo(e, 'sports');
+                }}
+                style={{ fontSize: '1rem', color: 'var(--text-primary)', cursor: 'pointer' }}
+              >
+                Sports
+              </a>
+              <a
+                href="#about"
+                onClick={(e) => {
+                  setMobileMenuOpen(false);
+                  handleScrollTo(e, 'about');
+                }}
+                style={{ fontSize: '1rem', color: 'var(--text-primary)', cursor: 'pointer' }}
+              >
+                Why PlayArena
+              </a>
+              <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', margin: '0.5rem 0' }} />
+            </>
+          )}
 
           {isAuthenticated ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>

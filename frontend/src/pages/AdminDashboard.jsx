@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { turfService } from '../services/turfService';
 import { bookingService } from '../services/bookingService';
-import { MOCK_USERS } from '../data/mockData';
+import { adminService } from '../services/adminService';
 import StatCard from '../components/common/StatCard';
 import StatusBadge from '../components/common/StatusBadge';
 import LoadingSkeleton from '../components/common/LoadingSkeleton';
@@ -15,23 +15,27 @@ import {
   XCircle,
   ArrowRight,
   ShieldCheck,
+  Eye,
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
   const [turfs, setTurfs] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const [userCount, setUserCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAdminStats = async () => {
       setLoading(true);
       try {
-        const [turfData, bookingData] = await Promise.all([
-          turfService.getAllTurfs(),
+        const [turfData, bookingData, usersData] = await Promise.all([
+          turfService.getAdminTurfs(),
           bookingService.getOwnerBookings(),
+          adminService.getAdminUsers(),
         ]);
         setTurfs(turfData.turfs || []);
         setBookings(bookingData.bookings || []);
+        setUserCount(usersData.count || usersData.users?.length || 0);
       } catch (err) {
         console.error('Admin overview failed:', err);
       } finally {
@@ -98,7 +102,7 @@ export const AdminDashboard = () => {
         />
         <StatCard
           title="Registered Users"
-          value={MOCK_USERS.length}
+          value={userCount}
           subtitle="Athletes & turf partners"
           icon={Users}
           color="#38bdf8"
@@ -168,8 +172,9 @@ export const AdminDashboard = () => {
                       <span className="badge badge-pending">Pending Review</span>
                     </td>
                     <td style={{ padding: '0.85rem 1rem' }}>
-                      <Link to="/admin/turfs" className="btn btn-secondary btn-sm">
-                        Audit
+                      <Link to={`/turfs/${t._id || t.id}`} className="btn btn-secondary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Eye size={14} />
+                        <span>Inspect & Approve</span>
                       </Link>
                     </td>
                   </tr>

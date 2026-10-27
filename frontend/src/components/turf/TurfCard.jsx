@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Star, ShieldCheck, ArrowRight, Zap } from 'lucide-react';
+import { MapPin, Star, ShieldCheck } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 
 const DEFAULT_IMAGE =

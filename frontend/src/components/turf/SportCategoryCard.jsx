@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Trophy, Shield, Activity, Award, Zap, Compass, ArrowRight } from 'lucide-react';
 
 const ICON_MAP = {
@@ -12,24 +12,11 @@ const ICON_MAP = {
 };
 
 export const SportCategoryCard = ({ sport }) => {
-  const navigate = useNavigate();
   const IconComponent = ICON_MAP[sport.iconName] || Trophy;
 
-  const handleClick = () => {
-    navigate(`/turfs?sport=${sport.id}`);
-  };
-
   return (
-    <div
-      onClick={handleClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
-        }
-      }}
+    <Link
+      to={`/turfs?sport=${sport.id}`}
       className="card card-hoverable"
       style={{
         position: 'relative',
@@ -41,6 +28,7 @@ export const SportCategoryCard = ({ sport }) => {
         flexDirection: 'column',
         justifyContent: 'flex-end',
         padding: '1.5rem',
+        textDecoration: 'none',
       }}
     >
       {/* Background Image with Dark Gradient Overlay */}
@@ -116,7 +104,7 @@ export const SportCategoryCard = ({ sport }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

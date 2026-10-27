@@ -47,7 +47,7 @@ export const Footer = () => {
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--lime-primary)', fontSize: '0.85rem' }}>
               <Shield size={16} />
-              <span>Full-Stack College Project Demo</span>
+              <span>Verified Sports Ground Reservation Platform</span>
             </div>
           </div>
 
