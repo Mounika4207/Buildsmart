@@ -157,13 +157,14 @@ describe('PlayArena API End-to-End Test Suite', () => {
 
   // 4. Bookings & Concurrency Overlap Prevention
   test('POST /api/bookings - Create booking with authoritative price calculation', async () => {
-    const nextWeekStr = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+    const randomOffset = Math.floor(Math.random() * 100) + 10;
+    const testDate = new Date(Date.now() + randomOffset * 86400000).toISOString().split('T')[0];
     const res = await request(app)
       .post('/api/bookings')
       .set('Authorization', `Bearer ${customerToken}`)
       .send({
         turfId: testTurf._id,
-        date: nextWeekStr,
+        date: testDate,
         startTime: '16:00',
         duration: 2,
         sport: 'football',
@@ -183,7 +184,7 @@ describe('PlayArena API End-to-End Test Suite', () => {
       .set('Authorization', `Bearer ${customerToken}`)
       .send({
         turfId: testTurf._id,
-        date: nextWeekStr,
+        date: testDate,
         startTime: '17:00',
         duration: 1,
         sport: 'football',

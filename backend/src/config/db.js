@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) {
+    return mongoose.connection;
+  }
+
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/sports_turf_booking', {
       serverSelectionTimeoutMS: 5000,
@@ -10,8 +14,7 @@ const connectDB = async () => {
     return conn;
   } catch (error) {
     console.error(`[Database Error] Failed to connect to MongoDB: ${error.message}`);
-    // In production or tests, handle appropriately
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
       process.exit(1);
     }
     throw error;
